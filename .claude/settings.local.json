@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\serge\\\\IdeaProjects\\\\backgts\" -Recurse -Directory | Select-Object -First 20 | ForEach-Object { $_.FullName })",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\serge\\\\IdeaProjects\\\\backgts\" -Recurse -Directory | Select-Object -First 50 | ForEach-Object { $_.FullName.Substring\\($_.FullName.IndexOf\\('backgts'\\)\\) })",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\serge\\\\IdeaProjects\\\\backgts\\\\src\" -Recurse | Select-Object -First 100 FullName | ForEach-Object { $_.Substring\\($_.IndexOf\\('backgts'\\)\\) })"
+    ]
+  }
+}
