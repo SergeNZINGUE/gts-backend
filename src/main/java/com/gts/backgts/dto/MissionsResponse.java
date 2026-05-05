@@ -16,7 +16,7 @@ public record MissionsResponse(
         String codeLocation,
         Long factureId,
         String factureEtatPaiement,
-        Long codeMission,
+        String codeMission,
         LocalDate dateDebutMission,
         LocalDate dateFinMission,
         Long kmDbtMission,

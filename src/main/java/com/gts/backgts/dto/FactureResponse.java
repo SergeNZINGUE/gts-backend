@@ -31,7 +31,7 @@ public record FactureResponse(
 
     public record MissionFactureeDTO(
             Long id,
-            Long codeMission,
+            String codeMission,
             String lieuMission,
             Double nbHeures,
             Double tarifHoraireApplique,

@@ -29,7 +29,7 @@ public record MissionsRequest(
 
         Long factureId,
 
-        Long codeMission,
+        String codeMission,
         LocalDate dateDebutMission,
         LocalDate dateFinMission,
         Long kmDbtMission,

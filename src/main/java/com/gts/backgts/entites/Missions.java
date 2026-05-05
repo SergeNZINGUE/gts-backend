@@ -45,7 +45,7 @@ public class Missions implements Serializable {
     public Double getSousTotal() {
         return (nbHeures != null && tarifHoraireApplique != null) ? nbHeures * tarifHoraireApplique : 0.0;
     }
-    private Long codeMission;
+    private String codeMission;
     private LocalDate dateDebutMission;
     private LocalDate dateFinMission;
     private LocalTime heureDebutMission;

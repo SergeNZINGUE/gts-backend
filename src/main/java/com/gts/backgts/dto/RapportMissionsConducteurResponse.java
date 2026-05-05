@@ -14,7 +14,7 @@ public record RapportMissionsConducteurResponse(
 ) {
     public record MissionDetail(
             Long id,
-            Long codeMission,
+            String codeMission,
             LocalDate dateDebutMission,
             LocalDate dateFinMission,
             LocalTime heureDebutMission,

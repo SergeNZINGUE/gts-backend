@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .container { max-width: 600px; margin: 20px auto; background: white; border-radius: 8px; padding: 30px; }
+        .header { background: #1E3A5F; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center; }
+        .btn { background: #2E75B6; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; display: inline-block; margin: 20px 0; }
+        .footer { color: #999; font-size: 12px; text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header"><h2>Bienvenue sur GTS !</h2></div>
+    <p>Bonjour <strong th:text="${prenoms + ' ' + nom}"></strong>,</p>
+    <p>Votre compte a été créé avec succès. Cliquez sur le bouton ci-dessous pour confirmer votre email :</p>
+    <a th:href="${lienConfirmation}" class="btn">Confirmer mon email</a>
+    <p>Ce lien expire dans <strong>24 heures</strong>.</p>
+    <div class="footer">GTS — Gestion Transport et Services</div>
+</div>
+</body>
+</html>
