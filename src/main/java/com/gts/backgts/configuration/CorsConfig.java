@@ -19,7 +19,7 @@ public class CorsConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(CorsConfig.class);
 
-    @Value("${app.cors.allowed-origins}")
+    @Value("${APP_CORS_ALLOWED_ORIGINS:https://gts-frontend-homologation.up.railway.app}")
     private String allowedOrigins;
 
     @Bean
