@@ -35,7 +35,7 @@ public class CorsConfig {
 
         logger.info("CORS parsed allowed origins list: {}", allowedOriginsList);
 
-        configuration.setAllowedOriginPatterns(allowedOriginsList);
+        configuration.setAllowedOrigins(allowedOriginsList);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization"));
