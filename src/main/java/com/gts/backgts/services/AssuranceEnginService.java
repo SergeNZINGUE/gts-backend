@@ -92,12 +92,15 @@ public class AssuranceEnginService {
     }
 
 
+
+
     public AssuranceEnginResponse updateAssuranceEngin(Long id, AssuranceEnginRequest request) {
         Engins engins=enginsRepository.findById(request.enginId())
                 .orElseThrow(() -> new IllegalArgumentException("Engin not found with id: " + request.enginId()));
 
 
         AssuranceEngin assurance=assuranceEnginRepository.findAssuranceEnginById(id);
+
                 assurance.setEngin(engins);
                 assurance.setNumeroPolice(request.numeroPolice());
                 assurance.setCompagnieAssurance(request.compagnieAssurance());
