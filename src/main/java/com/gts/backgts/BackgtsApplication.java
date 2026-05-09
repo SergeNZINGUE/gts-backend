@@ -20,37 +20,5 @@ public class BackgtsApplication {
         // The ApplicationReadyEvent listener (ApplicationStartupListener) will log
         // port and profile details once Tomcat is fully bound.
     }
-//    @Bean
-//    CommandLineRunner commandLineRunner(ClientRepository clientRepository,
-//                                        ActiviteClientRepository activiteClientRepository) {
-//        return args -> {
-//            ActiviteClient activite = activiteClientRepository.findByCodeActClt("A02");
-//            if (activite == null) {
-//                activite = activiteClientRepository.save(
-//                        ActiviteClient.builder()
-//                                .codeActClt("A09")
-//                                .description("BTP")
-//                                .dateCreation(LocalDate.now())
-//                                .dateModification(LocalDate.now())
-//                                .build()
-//                );
-//            }
-//
-//            clientRepository.save(Client.builder()
-//                    .codeClient("007")
-//                    .activiteClient(activite)
-//                    .designationEntreprise("AMP")
-//                    .descriptionEntreprise("SOGEA MINING ")
-//                    .communeEntreprise("Balkui")
-//                    .villeEntreprise("OUAGADOUGOU")
-//                    .telEntreprise("0101010101")
-//                    .personneRessource("OUEDRAOGO BENOIT")
-//                    .telPersonneRessource("12345556")
-//                    .dateCreation(LocalDate.now())
-//                    .dateModification(LocalDate.now())
-//                    .build());
-//
-//            System.out.println("Fin enregistrement Client");
-//        };
-//    }
+
 }
