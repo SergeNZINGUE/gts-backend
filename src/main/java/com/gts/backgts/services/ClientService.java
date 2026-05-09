@@ -5,6 +5,7 @@ import com.gts.backgts.entites.*;
 import com.gts.backgts.repository.ActiviteClientRepository;
 import com.gts.backgts.repository.ClientRepository;
 import com.gts.backgts.repository.LocationsRepository;
+import com.gts.backgts.repository.ReglementRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final ActiviteClientRepository activiteClientRepository;
     private final LocationsRepository locationsRepository;
+    private final ReglementRepository reglementRepository;
     @Value("${app.base-url:http://localhost:8081}")
     private String baseUrl;
 
@@ -112,6 +114,14 @@ public class ClientService {
         if (!clientRepository.existsById(id)) {
             throw new IllegalArgumentException("Client introuvable avec id: " + id);
         }
+        locationsRepository.findByClient_Id(id).forEach(loc -> {
+            loc.setClient(null);
+            locationsRepository.save(loc);
+        });
+        reglementRepository.findByClient_Id(id).forEach(reg -> {
+            reg.setClient(null);
+            reglementRepository.save(reg);
+        });
         clientRepository.deleteById(id);
     }
 

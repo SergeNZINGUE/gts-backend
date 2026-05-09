@@ -8,4 +8,6 @@ import java.util.List;
 public interface ReglementRepository extends JpaRepository<Reglement, Long> {
 
     List<Reglement> findByFacture_Id(Long factureId);
+
+    List<Reglement> findByClient_Id(Long clientId);
 }

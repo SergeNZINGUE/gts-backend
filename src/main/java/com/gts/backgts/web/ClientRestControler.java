@@ -34,6 +34,13 @@ public class ClientRestControler {
         int safeSize = Math.max(size, 1);
         return ResponseEntity.ok(clientService.getClientWithLocations(id, PageRequest.of(page, size)));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
+        clientService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{id}/images")
     public ResponseEntity<LogoClientResponse> getImages(@PathVariable Long id) {
         return ResponseEntity.ok(clientService.getLogoClient(id));
