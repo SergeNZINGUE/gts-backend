@@ -1,5 +1,6 @@
 package com.gts.backgts.dto;
 
+import com.gts.backgts.entites.TypeEngin;
 import com.gts.backgts.entites.TypeEtatEngins;
 
 import java.time.LocalDate;
@@ -10,7 +11,7 @@ public record EnginResponse(
         String modelEngin,
         LocalDate anneeEngin,
         String immatriculationEngin,
-        String typeEngin,
+        TypeEnginResponse typeEngin,
         String marqueEngin,
         TypeEtatEngins statusEngin,
         Integer etatEngins,

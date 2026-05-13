@@ -10,7 +10,7 @@ public record PelleRequest(
         String modelEngin,
         LocalDate anneeEngin,
         String immatriculationEngin,
-        String typeEngin,
+        Long typeEnginId,
         String marqueEngin,
         TypeEtatEngins statusEngin,
         Integer etatEngin,

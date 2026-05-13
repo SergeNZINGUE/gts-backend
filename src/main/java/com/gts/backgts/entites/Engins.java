@@ -27,7 +27,12 @@ public class Engins implements Serializable {
     private String modelEngin;
     private LocalDate anneeEngin;
     private String immatriculationEngin;
-    private String typeEngin;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "type_engin_id")
+    private TypeEngin typeEngin;
+
+
     private String marqueEngin;
     private Integer etatEngin;
     private TypeEtatEngins statusEngin;

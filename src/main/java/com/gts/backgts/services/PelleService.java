@@ -3,6 +3,7 @@ package com.gts.backgts.services;
 import com.gts.backgts.dto.PelleRequest;
 import com.gts.backgts.dto.PelleResponse;
 import com.gts.backgts.entites.Pelle;
+import com.gts.backgts.entites.TypeEngin;
 import com.gts.backgts.repository.PelleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class PelleService {
-
+    private final TypeEnginService typeEnginService;
     private final PelleRepository pelleRepository;
 
     public PelleResponse create(PelleRequest request) {
@@ -73,12 +74,17 @@ public class PelleService {
     }
 
     private Pelle toEntity(PelleRequest request) {
+        TypeEngin typeEngin = request.typeEnginId() != null
+                ? pelleRepository.findById(request.typeEnginId())
+                  .orElseThrow(() -> new RuntimeException("Type engin non trouvé")).getTypeEngin()
+                : null;
+
         Pelle pelle = new Pelle();
         pelle.setCodeEngin(request.codeEngin());
         pelle.setModelEngin(request.modelEngin());
         pelle.setAnneeEngin(request.anneeEngin());
         pelle.setImmatriculationEngin(request.immatriculationEngin());
-        pelle.setTypeEngin(request.typeEngin());
+        pelle.setTypeEngin(typeEngin);
         pelle.setMarqueEngin(request.marqueEngin());
         pelle.setStatusEngin(request.statusEngin());
         pelle.setEtatEngin(request.etatEngin());
@@ -101,7 +107,9 @@ public class PelleService {
                 pelle.getModelEngin(),
                 pelle.getAnneeEngin(),
                 pelle.getImmatriculationEngin(),
-                pelle.getTypeEngin(),
+                pelle.getTypeEngin() != null
+                        ? String.valueOf(typeEnginService.toResponse(pelle.getTypeEngin()))
+                        : null,
                 pelle.getMarqueEngin(),
                 pelle.getStatusEngin(),
                 pelle.getEtatEngin(),
