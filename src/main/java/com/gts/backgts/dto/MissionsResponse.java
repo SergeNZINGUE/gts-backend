@@ -21,6 +21,8 @@ public record MissionsResponse(
         LocalDate dateFinMission,
         Long kmDbtMission,
         Long kmFinMission,
+        Long compteurDbtMission,
+        Long compteurFinMission,
         Long carbtDbtMission,
         Long carbtFinMission,
         String materiauxMission,
@@ -32,6 +34,11 @@ public record MissionsResponse(
         String lieuMission,
         String descriptionMission,
         LocalDate dateCreation,
-        LocalDate dateModification
+        LocalDate dateModification,
+        Long conducteurId,
+        String codeConducteur,
+        String nomConducteur,
+        String prenomsConducteur,
+        String telephone
 ) {
 }

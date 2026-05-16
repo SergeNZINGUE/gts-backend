@@ -7,7 +7,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 public record MissionsRequest(
         @NotNull(message = "La date de travail est obligatoire")
@@ -27,6 +26,9 @@ public record MissionsRequest(
         @NotNull(message = "La location est obligatoire")
         Long locationId,
 
+        @NotNull(message = "Le conducteur est obligatoire")
+        Long conducteurId,
+
         Long factureId,
 
         String codeMission,
@@ -34,6 +36,8 @@ public record MissionsRequest(
         LocalDate dateFinMission,
         Long kmDbtMission,
         Long kmFinMission,
+        Long compteurDbtMission,
+        Long compteurFinMission,
         Long carbtDbtMission,
         Long carbtFinMission,
         String materiauxMission,

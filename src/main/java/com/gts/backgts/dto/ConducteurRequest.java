@@ -24,8 +24,10 @@ public record ConducteurRequest(
          LocalDate dateFinEmp,
          LocalDate dateNaissance,
          String typEmpl,
-        LocalDate dateCreation,
-        LocalDate dateModification
+         LocalDate dateCreation,
+         LocalDate dateModification,
+         Integer etatConducteur,
+         String statutConducteur
 
 ) {
 }

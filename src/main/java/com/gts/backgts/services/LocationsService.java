@@ -2,10 +2,7 @@ package com.gts.backgts.services;
 
 import com.gts.backgts.dto.LocationsRequest;
 import com.gts.backgts.dto.LocationsResponse;
-import com.gts.backgts.entites.Client;
-import com.gts.backgts.entites.Conducteur;
-import com.gts.backgts.entites.Engins;
-import com.gts.backgts.entites.Locations;
+import com.gts.backgts.entites.*;
 import com.gts.backgts.repository.ClientRepository;
 import com.gts.backgts.repository.ConducteurRepository;
 import com.gts.backgts.repository.EnginsRepository;
@@ -56,6 +53,13 @@ public class LocationsService {
         location.setEngins(engin);
         location.setDateCreation(LocalDate.now());
 
+        //Changement de status de l'engin'
+        engin.setStatusEngin(TypeEtatEngins.EN_MISSION);
+        enginsRepository.save(engin);
+
+        //Changement de status du conducteur'
+        conducteur.setStatutConducteur(StatutConducteur.EN_MISSION);
+        enginsRepository.save(engin);
         return toResponse(locationsRepository.save(location));
     }
 
@@ -114,6 +118,7 @@ public class LocationsService {
         location.setConducteur(conducteur);
         location.setEngins(engin);
         location.setDateModification(LocalDate.now());
+
 
         return toResponse(locationsRepository.save(location));
     }

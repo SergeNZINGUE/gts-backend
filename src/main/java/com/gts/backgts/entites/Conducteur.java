@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -43,7 +42,11 @@ public class Conducteur implements Serializable {
     private LocalDate dateFinEmp;
     private LocalDate dateNaissance;
     private String typEmpl;
-    private Integer statutConducteur;
+    private Integer etatConducteur;
+
+    @Enumerated(EnumType.STRING)
+    private StatutConducteur statutConducteur;
+
     LocalDate dateCreation;
     LocalDate dateModification;
 

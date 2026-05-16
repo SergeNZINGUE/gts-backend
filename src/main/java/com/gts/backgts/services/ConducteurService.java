@@ -1,7 +1,6 @@
 package com.gts.backgts.services;
 
 import com.gts.backgts.dto.*;
-import com.gts.backgts.entites.Client;
 import com.gts.backgts.entites.Conducteur;
 import com.gts.backgts.entites.Missions;
 import com.gts.backgts.repository.ConducteurMissionRepository;
@@ -19,11 +18,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +46,7 @@ public class ConducteurService {
                 .cniLieuEtab(conducteurRequest.cniLieuEtab())
                 .cniDateExp(conducteurRequest.cniDateExp())
                 .permisCond(conducteurRequest.permisCond())
-                .statutConducteur(1)
+                .etatConducteur(1)
                 .qualifications(conducteurRequest.qualifications())
                 .dateDebutEmp(conducteurRequest.dateDebutEmp())
                 .dateFinEmp(conducteurRequest.dateFinEmp())
@@ -126,6 +123,7 @@ public class ConducteurService {
                         conducteur.getTelephone(),
                         conducteur.getPermisCond(),
                         conducteur.getQualifications(),
+                        conducteur.getEtatConducteur(),
                         conducteur.getStatutConducteur(),
                         missions.getTotalElements(),
                         conducteur.getDateDebutEmp(),
@@ -136,7 +134,8 @@ public class ConducteurService {
                         missions.getNumber(),
                         missions.getSize(),
                         missions.getTotalPages(),
-                missionResumeResponses);
+                        missionResumeResponses
+        );
     }
 
     @Transactional(readOnly = true)
@@ -216,10 +215,13 @@ public class ConducteurService {
                         conducteur.getDateNaissance(),
 
                         conducteur.getTypEmpl(),
-                        conducteur.getStatutConducteur(),
+
 
                         conducteur.getDateCreation(),
-                        conducteur.getDateModification()
+                        conducteur.getDateModification(),
+
+                        conducteur.getEtatConducteur(),
+                        conducteur.getStatutConducteur()
 
                 );
     }

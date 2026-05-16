@@ -35,6 +35,8 @@ public class Engins implements Serializable {
 
     private String marqueEngin;
     private Integer etatEngin;
+
+    @Enumerated(EnumType.STRING)
     private TypeEtatEngins statusEngin;
     private String typCarbtEngin;
     private LocalDate dateAcqEngin;

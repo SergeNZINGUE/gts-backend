@@ -2,16 +2,19 @@ package com.gts.backgts.services;
 
 import com.gts.backgts.dto.MissionsRequest;
 import com.gts.backgts.dto.MissionsResponse;
+import com.gts.backgts.entites.Conducteur;
+import com.gts.backgts.entites.ConducteurMission;
 import com.gts.backgts.entites.Facture;
 import com.gts.backgts.entites.Locations;
 import com.gts.backgts.entites.Missions;
+import com.gts.backgts.repository.ConducteurMissionRepository;
+import com.gts.backgts.repository.ConducteurRepository;
 import com.gts.backgts.repository.FactureRepository;
 import com.gts.backgts.repository.LocationsRepository;
 import com.gts.backgts.repository.MissionsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,8 +28,12 @@ public class MissionsService {
     private final MissionsRepository missionsRepository;
     private final LocationsRepository locationsRepository;
     private final FactureRepository factureRepository;
+    private final ConducteurRepository conducteurRepository;
+    private final ConducteurMissionRepository conducteurMissionRepository;
 
     public MissionsResponse createMission(MissionsRequest request) {
+        Conducteur conducteur = conducteurRepository.findById(request.conducteurId())
+                .orElseThrow(() -> new IllegalArgumentException("Conducteur introuvable avec id: " + request.conducteurId()));
         Locations location = locationsRepository.findById(request.locationId())
                 .orElseThrow(() -> new IllegalArgumentException("Location introuvable avec id: " + request.locationId()));
 
@@ -37,6 +44,21 @@ public class MissionsService {
         }
 
         Missions mission = new Missions();
+        saveMission(request, location, facture, mission);
+        mission.setDateCreation(LocalDate.now());
+        Missions savedMission = missionsRepository.save(mission);
+
+        ConducteurMission conducteurMission = new ConducteurMission();
+        conducteurMission.setConducteur(conducteur);
+        conducteurMission.setMission(savedMission);
+        conducteurMission.setDateMCd(LocalDate.now());
+        conducteurMission.setDateCreation(LocalDate.now());
+        conducteurMissionRepository.save(conducteurMission);
+
+        return toResponse(savedMission);
+    }
+
+    private void saveMission(MissionsRequest request, Locations location, Facture facture, Missions mission) {
         mission.setDateTravail(request.dateTravail());
         mission.setNbHeures(request.nbHeures());
         mission.setHeureDebutMission(request.heureDebutMission());
@@ -50,6 +72,8 @@ public class MissionsService {
         mission.setDateFinMission(request.dateFinMission());
         mission.setKmDbtMission(request.kmDbtMission());
         mission.setKmFinMission(request.kmFinMission());
+        mission.setCompteurDbtMission(request.compteurDbtMission());
+        mission.setCompteurFinMission(request.compteurFinMission());
         mission.setCarbtDbtMission(request.carbtDbtMission());
         mission.setCarbtFinMission(request.carbtFinMission());
         mission.setMateriauxMission(request.materiauxMission());
@@ -60,9 +84,6 @@ public class MissionsService {
         mission.setResponsableMission(request.responsableMission());
         mission.setLieuMission(request.lieuMission());
         mission.setDescriptionMission(request.descriptionMission());
-        mission.setDateCreation(LocalDate.now());
-
-        return toResponse(missionsRepository.save(mission));
     }
 
     @Transactional(readOnly = true)
@@ -93,31 +114,28 @@ public class MissionsService {
                     .orElseThrow(() -> new IllegalArgumentException("Facture introuvable avec id: " + request.factureId()));
         }
 
-        mission.setDateTravail(request.dateTravail());
-        mission.setNbHeures(request.nbHeures());
-        mission.setHeureDebutMission(request.heureDebutMission());
-        mission.setHeureFinMission(request.heureFinMission());
-        mission.setTarifHoraireApplique(request.tarifHoraireApplique());
-        mission.setLocation(location);
-        mission.setFacture(facture);
-        mission.setCodeMission(request.codeMission());
-        mission.setDateDebutMission(request.dateDebutMission());
-        mission.setDateFinMission(request.dateFinMission());
-        mission.setKmDbtMission(request.kmDbtMission());
-        mission.setKmFinMission(request.kmFinMission());
-        mission.setCarbtDbtMission(request.carbtDbtMission());
-        mission.setCarbtFinMission(request.carbtFinMission());
-        mission.setMateriauxMission(request.materiauxMission());
-        mission.setQteMateriauxMission(request.qteMateriauxMission());
-        mission.setStatutMission(request.statutMission());
-        mission.setObservationMission(request.observationMission());
-        mission.setPrioriteMission(request.prioriteMission());
-        mission.setResponsableMission(request.responsableMission());
-        mission.setLieuMission(request.lieuMission());
-        mission.setDescriptionMission(request.descriptionMission());
+        saveMission(request, location, facture, mission);
         mission.setDateModification(LocalDate.now());
+        Missions savedMission = missionsRepository.save(mission);
 
-        return toResponse(missionsRepository.save(mission));
+        if (request.conducteurId() != null) {
+            ConducteurMission cm = conducteurMissionRepository.findByMission(savedMission)
+                    .orElse(new ConducteurMission());
+            boolean conducteurChange = cm.getConducteur() == null
+                    || !cm.getConducteur().getIdConducteur().equals(request.conducteurId());
+            if (conducteurChange) {
+                Conducteur conducteur = conducteurRepository.findById(request.conducteurId())
+                        .orElseThrow(() -> new IllegalArgumentException("Conducteur introuvable avec id: " + request.conducteurId()));
+                cm.setConducteur(conducteur);
+                cm.setMission(savedMission);
+                cm.setDateMCd(LocalDate.now());
+                if (cm.getDateCreation() == null) cm.setDateCreation(LocalDate.now());
+                cm.setDateModification(LocalDate.now());
+                conducteurMissionRepository.save(cm);
+            }
+        }
+
+        return toResponse(savedMission);
     }
 
     public MissionsResponse terminerMission(Long id, MissionsRequest request) {
@@ -138,6 +156,10 @@ public class MissionsService {
                 .ifPresent(mission::setKmDbtMission);
         Optional.ofNullable(request.kmFinMission())
                 .ifPresent(mission::setKmFinMission);
+        Optional.ofNullable(request.compteurDbtMission())
+                .ifPresent(mission::setCompteurDbtMission);
+        Optional.ofNullable(request.compteurFinMission())
+                .ifPresent(mission::setCompteurFinMission);
         Optional.ofNullable(request.carbtDbtMission())
                 .ifPresent(mission::setCarbtDbtMission);
         Optional.ofNullable(request.carbtFinMission())
@@ -165,6 +187,11 @@ public class MissionsService {
     }
 
     private MissionsResponse toResponse(Missions mission) {
+        Conducteur conducteur = mission.getConducteurMissions().stream()
+                .findFirst()
+                .map(ConducteurMission::getConducteur)
+                .orElse(null);
+
         return new MissionsResponse(
                 mission.getId(),
                 mission.getDateTravail(),
@@ -182,6 +209,8 @@ public class MissionsService {
                 mission.getDateFinMission(),
                 mission.getKmDbtMission(),
                 mission.getKmFinMission(),
+                mission.getCompteurDbtMission(),
+                mission.getCompteurFinMission(),
                 mission.getCarbtDbtMission(),
                 mission.getCarbtFinMission(),
                 mission.getMateriauxMission(),
@@ -193,7 +222,12 @@ public class MissionsService {
                 mission.getLieuMission(),
                 mission.getDescriptionMission(),
                 mission.getDateCreation(),
-                mission.getDateModification()
+                mission.getDateModification(),
+                conducteur != null ? conducteur.getIdConducteur() : null,
+                conducteur != null ? conducteur.getCodeConducteur() : null,
+                conducteur != null ? conducteur.getNomConducteur() : null,
+                conducteur != null ? conducteur.getPrenomsConducteur() : null,
+                conducteur != null ? conducteur.getTelephone() : null
         );
     }
 }

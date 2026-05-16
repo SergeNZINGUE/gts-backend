@@ -1,5 +1,7 @@
 package com.gts.backgts.dto;
 
+import com.gts.backgts.entites.StatutConducteur;
+
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -22,8 +24,9 @@ public record ConducteurResponse(
         LocalDate dateFinEmp,
         LocalDate dateNaissance,
         String typEmpl,
-        Integer statutConducteur,
         LocalDate dateCreation,
-        LocalDate dateModification
+        LocalDate dateModification,
+        Integer etatConducteur,
+        StatutConducteur statutConducteur
 ) {
 }

@@ -53,6 +53,10 @@ public class Missions implements Serializable {
     private Long kmDbtMission;
     private Long kmFinMission;
 
+    private Long compteurDbtMission;
+    private Long compteurFinMission;
+
+
     private Long carbtDbtMission;
     private Long carbtFinMission;
     private String materiauxMission;
