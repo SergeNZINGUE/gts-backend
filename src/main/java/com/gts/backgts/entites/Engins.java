@@ -1,5 +1,6 @@
 package com.gts.backgts.entites;
 
+import com.gts.backgts.enums.TypeEtatEngins;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,7 +8,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Entity

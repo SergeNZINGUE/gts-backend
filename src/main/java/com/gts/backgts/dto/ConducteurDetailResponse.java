@@ -1,5 +1,7 @@
 package com.gts.backgts.dto;
 
+import com.gts.backgts.enums.StatutConducteur;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,17 +14,17 @@ public record ConducteurDetailResponse(
         String permisCond,
         String qualifications,
         Integer etatConducteur,
-        com.gts.backgts.entites.StatutConducteur statutConducteur,
+        StatutConducteur statutConducteur,
         Long nombreMissions,
         LocalDate dateDebutEmp,
         LocalDate dateFinEmp,
         LocalDate dateNaissance,
         String typEmpl,
-
         String imgConducteur,
         Integer page,
         Integer size,
         Integer totalPages,
-        List<MissionResumeResponse> missions
+        List<MissionResumeResponse> missions,
+        Integer coutHoraireConducteur
 ) {
 }

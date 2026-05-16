@@ -3,6 +3,7 @@ package com.gts.backgts.services;
 import com.gts.backgts.dto.*;
 import com.gts.backgts.entites.Conducteur;
 import com.gts.backgts.entites.Missions;
+import com.gts.backgts.enums.StatutConducteur;
 import com.gts.backgts.repository.ConducteurMissionRepository;
 import com.gts.backgts.repository.ConducteurRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class ConducteurService {
                 .nomConducteur(conducteurRequest.nomConducteur())
                 .prenomsConducteur(conducteurRequest.prenomsConducteur())
                 .telephone(conducteurRequest.telephone())
-                .cnibRef(conducteurRequest.cnibRef())
+                .cnibRef(conducteurRequest.cniRef())
                 .cniDateEmi(conducteurRequest.cniDateEmi())
                 .cniLieuEtab(conducteurRequest.cniLieuEtab())
                 .cniDateExp(conducteurRequest.cniDateExp())
@@ -53,6 +54,8 @@ public class ConducteurService {
                 .dateNaissance(conducteurRequest.dateNaissance())
                 .dateCreation(LocalDate.now())
                 .typEmpl(conducteurRequest.typEmpl())
+                .coutHoraireConducteur(conducteurRequest.coutHoraireConducteur())
+                .statutConducteur(StatutConducteur.DISPONIBLE)
 
                 .build();
         savePiecesJointes(conducteur, conducteurRequest.imgCni(), conducteurRequest.imgConducteur(), conducteurRequest.imgPermis());
@@ -134,7 +137,8 @@ public class ConducteurService {
                         missions.getNumber(),
                         missions.getSize(),
                         missions.getTotalPages(),
-                        missionResumeResponses
+                        missionResumeResponses,
+                        conducteur.getCoutHoraireConducteur()
         );
     }
 
@@ -221,7 +225,8 @@ public class ConducteurService {
                         conducteur.getDateModification(),
 
                         conducteur.getEtatConducteur(),
-                        conducteur.getStatutConducteur()
+                        conducteur.getStatutConducteur(),
+                        conducteur.getCoutHoraireConducteur()
 
                 );
     }

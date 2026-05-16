@@ -1,4 +1,4 @@
-package com.gts.backgts.entites;
+package com.gts.backgts.enums;
 
 public enum StatutConducteur {
     DISPONIBLE,

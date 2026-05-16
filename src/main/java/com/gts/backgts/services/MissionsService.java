@@ -7,6 +7,9 @@ import com.gts.backgts.entites.ConducteurMission;
 import com.gts.backgts.entites.Facture;
 import com.gts.backgts.entites.Locations;
 import com.gts.backgts.entites.Missions;
+import com.gts.backgts.enums.ModeCloture;
+import com.gts.backgts.enums.StatutMission;
+import com.gts.backgts.exceptions.ConducteurDejaEnMissionException;
 import com.gts.backgts.repository.ConducteurMissionRepository;
 import com.gts.backgts.repository.ConducteurRepository;
 import com.gts.backgts.repository.FactureRepository;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,22 +36,38 @@ public class MissionsService {
     private final ConducteurMissionRepository conducteurMissionRepository;
 
     public MissionsResponse createMission(MissionsRequest request) {
+        // 1. Charger le conducteur (une seule fois)
         Conducteur conducteur = conducteurRepository.findById(request.conducteurId())
                 .orElseThrow(() -> new IllegalArgumentException("Conducteur introuvable avec id: " + request.conducteurId()));
+
+        // 1. Vérifier si le conducteur est déjà EN_COURS
+        boolean dejaEnMission = conducteurMissionRepository
+                .existsConducteurEnMission(request.conducteurId(), StatutMission.EN_COURS);
+
+        if (dejaEnMission) {
+
+            throw new ConducteurDejaEnMissionException(
+                    conducteur.getPrenomsConducteur() + " " + conducteur.getNomConducteur()
+            );
+        }
+
+        // 3. Charger la location
         Locations location = locationsRepository.findById(request.locationId())
                 .orElseThrow(() -> new IllegalArgumentException("Location introuvable avec id: " + request.locationId()));
 
+        // 4. Charger la facture
         Facture facture = null;
         if (request.factureId() != null) {
             facture = factureRepository.findById(request.factureId())
                     .orElseThrow(() -> new IllegalArgumentException("Facture introuvable avec id: " + request.factureId()));
         }
-
+        // 5. Créer et sauvegarder la mission
         Missions mission = new Missions();
         saveMission(request, location, facture, mission);
+        mission.setStatutMission(StatutMission.EN_COURS); // toujours EN_COURS à la création
         mission.setDateCreation(LocalDate.now());
         Missions savedMission = missionsRepository.save(mission);
-
+        // 6. Créer le lien ConducteurMission
         ConducteurMission conducteurMission = new ConducteurMission();
         conducteurMission.setConducteur(conducteur);
         conducteurMission.setMission(savedMission);
@@ -78,7 +98,7 @@ public class MissionsService {
         mission.setCarbtFinMission(request.carbtFinMission());
         mission.setMateriauxMission(request.materiauxMission());
         mission.setQteMateriauxMission(request.qteMateriauxMission());
-        mission.setStatutMission(request.statutMission());
+        //mission.setStatutMission(request.statutMission());
         mission.setObservationMission(request.observationMission());
         mission.setPrioriteMission(request.prioriteMission());
         mission.setResponsableMission(request.responsableMission());
@@ -138,45 +158,42 @@ public class MissionsService {
         return toResponse(savedMission);
     }
 
+    /**
+     * Clôture manuelle d'une mission par l'opérateur.
+     * Met à jour les données terrain + passe en TERMINE avec modeCloture MANUEL.
+     */
     public MissionsResponse terminerMission(Long id, MissionsRequest request) {
-        System.out.println("Mission"+ request);
-        System.out.println("Mission nbHeure"+ request.nbHeures());
-        System.out.println("Mission"+ request.tarifHoraireApplique());
-        System.out.println("Mission"+ request.kmDbtMission());
-        System.out.println("Mission"+ request.kmFinMission());
-        System.out.println("Mission"+ request.carbtDbtMission());
-        System.out.println("Mission"+ request.carbtFinMission());
-        System.out.println("Mission"+ request.materiauxMission());
         Missions mission = missionsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Mission introuvable avec id: " + id));
 
-        Optional.ofNullable(request.nbHeures())
-                .ifPresent(mission::setNbHeures);
-        Optional.ofNullable(request.kmDbtMission())
-                .ifPresent(mission::setKmDbtMission);
-        Optional.ofNullable(request.kmFinMission())
-                .ifPresent(mission::setKmFinMission);
-        Optional.ofNullable(request.compteurDbtMission())
-                .ifPresent(mission::setCompteurDbtMission);
-        Optional.ofNullable(request.compteurFinMission())
-                .ifPresent(mission::setCompteurFinMission);
-        Optional.ofNullable(request.carbtDbtMission())
-                .ifPresent(mission::setCarbtDbtMission);
-        Optional.ofNullable(request.carbtFinMission())
-                .ifPresent(mission::setCarbtFinMission);
-        Optional.ofNullable(request.materiauxMission())
-                .ifPresent(mission::setMateriauxMission);
-        Optional.ofNullable(request.qteMateriauxMission())
-                .ifPresent(mission::setQteMateriauxMission);
-        Optional.ofNullable(request.heureDebutMission())
-                .ifPresent(mission::setHeureDebutMission);
-        Optional.ofNullable(request.heureFinMission())
-                .ifPresent(mission::setHeureFinMission);
+        if (mission.getStatutMission() == StatutMission.TERMINEE) {
+            throw new IllegalStateException("La mission est déjà clôturée.");
+        }
 
-       mission.setStatutMission(request.statutMission());
+        // Mise à jour des données terrain (champs optionnels)
+        Optional.ofNullable(request.nbHeures()).ifPresent(mission::setNbHeures);
+        Optional.ofNullable(request.kmDbtMission()).ifPresent(mission::setKmDbtMission);
+        Optional.ofNullable(request.kmFinMission()).ifPresent(mission::setKmFinMission);
+        Optional.ofNullable(request.compteurDbtMission()).ifPresent(mission::setCompteurDbtMission);
+        Optional.ofNullable(request.compteurFinMission()).ifPresent(mission::setCompteurFinMission);
+        Optional.ofNullable(request.carbtDbtMission()).ifPresent(mission::setCarbtDbtMission);
+        Optional.ofNullable(request.carbtFinMission()).ifPresent(mission::setCarbtFinMission);
+        Optional.ofNullable(request.materiauxMission()).ifPresent(mission::setMateriauxMission);
+        Optional.ofNullable(request.qteMateriauxMission()).ifPresent(mission::setQteMateriauxMission);
+        Optional.ofNullable(request.heureDebutMission()).ifPresent(mission::setHeureDebutMission);
+        Optional.ofNullable(request.heureFinMission()).ifPresent(mission::setHeureFinMission);
+        Optional.ofNullable(request.tarifHoraireApplique()).ifPresent(mission::setTarifHoraireApplique);
+        Optional.ofNullable(request.observationMission()).ifPresent(mission::setObservationMission);
+
+        // Clôture
+        mission.setStatutMission(StatutMission.TERMINEE);
+        mission.setModeCloture(ModeCloture.MANUEL);
+        mission.setDateCloture(LocalDateTime.now());
+        mission.setDateModification(LocalDate.now());
 
         return toResponse(missionsRepository.save(mission));
     }
+
 
 
     public void deleteMission(Long id) {
@@ -184,6 +201,25 @@ public class MissionsService {
             throw new IllegalArgumentException("Mission introuvable avec id: " + id);
         }
         missionsRepository.deleteById(id);
+    }
+
+    /**
+     * Clôture rapide sans données terrain — appelée depuis le bouton "Clôturer" UI.
+     */
+    public MissionsResponse cloturerMission(Long id) {
+        Missions mission = missionsRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Mission introuvable avec id: " + id));
+
+        if (mission.getStatutMission() == StatutMission.TERMINEE) {
+            throw new IllegalStateException("La mission est déjà clôturée.");
+        }
+
+        mission.setStatutMission(StatutMission.TERMINEE);
+        mission.setModeCloture(ModeCloture.MANUEL);
+        mission.setDateCloture(LocalDateTime.now());
+        mission.setDateModification(LocalDate.now());
+
+        return toResponse(missionsRepository.save(mission));
     }
 
     private MissionsResponse toResponse(Missions mission) {
@@ -223,6 +259,8 @@ public class MissionsService {
                 mission.getDescriptionMission(),
                 mission.getDateCreation(),
                 mission.getDateModification(),
+                mission.getModeCloture(),
+                mission.getDateCloture(),
                 conducteur != null ? conducteur.getIdConducteur() : null,
                 conducteur != null ? conducteur.getCodeConducteur() : null,
                 conducteur != null ? conducteur.getNomConducteur() : null,

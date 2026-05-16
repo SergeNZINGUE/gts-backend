@@ -1,6 +1,6 @@
 package com.gts.backgts.dto;
 
-import com.gts.backgts.entites.TypeMouvement;
+import com.gts.backgts.enums.TypeMouvement;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

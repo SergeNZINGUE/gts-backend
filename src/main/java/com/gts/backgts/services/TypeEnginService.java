@@ -3,7 +3,7 @@ package com.gts.backgts.services;
 
 import com.gts.backgts.dto.TypeEnginRequest;
 import com.gts.backgts.dto.TypeEnginResponse;
-import com.gts.backgts.entites.FamilleEngin;
+import com.gts.backgts.enums.FamilleEngin;
 import com.gts.backgts.entites.TypeEngin;
 import com.gts.backgts.repository.TypeEnginRepository;
 import lombok.RequiredArgsConstructor;

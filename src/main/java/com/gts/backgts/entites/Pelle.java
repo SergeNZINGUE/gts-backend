@@ -1,8 +1,7 @@
 package com.gts.backgts.entites;
 
+import com.gts.backgts.enums.TypeTrain;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

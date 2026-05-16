@@ -12,14 +12,14 @@ public record MissionsRequest(
         @NotNull(message = "La date de travail est obligatoire")
         LocalDate dateTravail,
 
-        @NotNull(message = "Le nombre d'heures est obligatoire")
+
         @PositiveOrZero(message = "Le nombre d'heures doit être positif")
         Double nbHeures,
 
         LocalTime heureDebutMission,
         LocalTime heureFinMission,
 
-        @NotNull(message = "Le tarif horaire est obligatoire")
+
         @PositiveOrZero(message = "Le tarif horaire doit être positif ou nul")
         Double tarifHoraireApplique,
 
@@ -43,7 +43,7 @@ public record MissionsRequest(
         String materiauxMission,
         Long qteMateriauxMission,
 
-        @NotBlank(message = "Le statut de la mission est obligatoire")
+
         String statutMission,
 
         String observationMission,

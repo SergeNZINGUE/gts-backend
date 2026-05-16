@@ -2,7 +2,7 @@ package com.gts.backgts.web;
 
 import com.gts.backgts.dto.TypeEnginRequest;
 import com.gts.backgts.dto.TypeEnginResponse;
-import com.gts.backgts.entites.FamilleEngin;
+import com.gts.backgts.enums.FamilleEngin;
 import com.gts.backgts.services.TypeEnginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

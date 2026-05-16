@@ -1,10 +1,8 @@
 package com.gts.backgts.repository;
 
 import com.gts.backgts.entites.Engins;
-import com.gts.backgts.entites.TypeEtatEngins;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 

@@ -1,7 +1,6 @@
 package com.gts.backgts.dto;
 
-import com.gts.backgts.entites.TypeEngin;
-import com.gts.backgts.entites.TypeEtatEngins;
+import com.gts.backgts.enums.TypeEtatEngins;
 
 import java.time.LocalDate;
 

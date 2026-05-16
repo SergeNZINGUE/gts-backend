@@ -2,8 +2,7 @@ package com.gts.backgts.web;
 
 import com.gts.backgts.dto.AssuranceEnginRequest;
 import com.gts.backgts.dto.AssuranceEnginResponse;
-import com.gts.backgts.entites.AssuranceEngin;
-import com.gts.backgts.entites.StatutAssurance;
+import com.gts.backgts.enums.StatutAssurance;
 import com.gts.backgts.services.AssuranceEnginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

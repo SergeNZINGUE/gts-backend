@@ -1,5 +1,7 @@
 package com.gts.backgts.dto;
 
+import com.gts.backgts.enums.StatutMission;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public record FactureResponse(
             Double nbHeures,
             Double tarifHoraireApplique,
             Double sousTotal,
-            String statutMission
+            StatutMission statutMission
     ) {}
 
     public record ReglementDTO(

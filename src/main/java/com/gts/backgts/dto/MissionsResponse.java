@@ -1,6 +1,10 @@
 package com.gts.backgts.dto;
 
+import com.gts.backgts.enums.ModeCloture;
+import com.gts.backgts.enums.StatutMission;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public record MissionsResponse(
@@ -27,7 +31,7 @@ public record MissionsResponse(
         Long carbtFinMission,
         String materiauxMission,
         Long qteMateriauxMission,
-        String statutMission,
+        StatutMission statutMission,
         String observationMission,
         String prioriteMission,
         String responsableMission,
@@ -35,6 +39,8 @@ public record MissionsResponse(
         String descriptionMission,
         LocalDate dateCreation,
         LocalDate dateModification,
+        ModeCloture modeCloture,      // nouveau
+        LocalDateTime dateCloture,    // nouveau
         Long conducteurId,
         String codeConducteur,
         String nomConducteur,

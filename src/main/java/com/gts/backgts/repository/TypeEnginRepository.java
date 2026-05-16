@@ -1,6 +1,6 @@
 package com.gts.backgts.repository;
 
-import com.gts.backgts.entites.FamilleEngin;
+import com.gts.backgts.enums.FamilleEngin;
 import com.gts.backgts.entites.TypeEngin;
 import org.springframework.data.jpa.repository.JpaRepository;
 

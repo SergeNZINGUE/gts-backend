@@ -4,7 +4,7 @@ import com.gts.backgts.dto.AssuranceEnginRequest;
 import com.gts.backgts.dto.AssuranceEnginResponse;
 import com.gts.backgts.entites.AssuranceEngin;
 import com.gts.backgts.entites.Engins;
-import com.gts.backgts.entites.StatutAssurance;
+import com.gts.backgts.enums.StatutAssurance;
 import com.gts.backgts.repository.AssuranceEnginRepository;
 import com.gts.backgts.repository.EnginsRepository;
 import org.springframework.transaction.annotation.Transactional;

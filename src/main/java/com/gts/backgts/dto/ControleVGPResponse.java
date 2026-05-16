@@ -1,6 +1,6 @@
 package com.gts.backgts.dto;
 
-import com.gts.backgts.entites.StatutVGP;
+import com.gts.backgts.enums.StatutVGP;
 
 import java.time.LocalDate;
 

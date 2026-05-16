@@ -1,9 +1,8 @@
 package com.gts.backgts.dto;
 
-import com.gts.backgts.entites.StatutConducteur;
+import com.gts.backgts.enums.StatutConducteur;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public record ConducteurResponse(
         Long id,
@@ -13,7 +12,7 @@ public record ConducteurResponse(
         String telephone,
         String permisCond,
         String qualifications,
-        String cnibRef,
+        String cniRef,
         String cniDateEmi,
         String cniDateExp,
         String cniLieuEtab,
@@ -27,6 +26,7 @@ public record ConducteurResponse(
         LocalDate dateCreation,
         LocalDate dateModification,
         Integer etatConducteur,
-        StatutConducteur statutConducteur
+        StatutConducteur statutConducteur,
+        Integer coutHoraireConducteur
 ) {
 }

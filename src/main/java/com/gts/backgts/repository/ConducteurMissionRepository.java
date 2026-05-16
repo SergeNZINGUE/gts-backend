@@ -2,6 +2,7 @@ package com.gts.backgts.repository;
 
 import com.gts.backgts.entites.ConducteurMission;
 import com.gts.backgts.entites.Missions;
+import com.gts.backgts.enums.StatutMission;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -35,5 +36,16 @@ public interface ConducteurMissionRepository extends JpaRepository<ConducteurMis
     List<Missions> findMissionsByConducteurIdAndLocationId(
             @Param("conducteurId") Long conducteurId,
             @Param("locationId") Long locationId
+    );
+
+    @Query("""
+    SELECT COUNT(cm) > 0
+    FROM ConducteurMission cm
+    WHERE cm.conducteur.idConducteur = :conducteurId
+      AND cm.mission.statutMission = :statut
+""")
+    boolean existsConducteurEnMission(
+            @Param("conducteurId") Long conducteurId,
+            @Param("statut") StatutMission statut
     );
 }

@@ -1,6 +1,6 @@
 package com.gts.backgts.dto;
 
-import com.gts.backgts.entites.FamilleEngin;
+import com.gts.backgts.enums.FamilleEngin;
 
 public record TypeEnginResponse(
 

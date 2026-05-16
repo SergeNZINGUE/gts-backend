@@ -1,6 +1,7 @@
 package com.gts.backgts.entites;
 
 
+import com.gts.backgts.enums.StatutConducteur;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,6 +44,8 @@ public class Conducteur implements Serializable {
     private LocalDate dateNaissance;
     private String typEmpl;
     private Integer etatConducteur;
+    private Integer coutHoraireConducteur;
+
 
     @Enumerated(EnumType.STRING)
     private StatutConducteur statutConducteur;

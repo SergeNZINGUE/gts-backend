@@ -1,5 +1,7 @@
 package com.gts.backgts.dto;
 
+import com.gts.backgts.enums.StatutMission;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -29,7 +31,7 @@ public record RapportMissionsConducteurResponse(
             Long carbtFinMission,
             String materiauxMission,
             Long qteMateriauxMission,
-            String statutMission,
+            StatutMission statutMission,
             String codeLocation,
             String clientNom
     ) {}

@@ -3,6 +3,7 @@ package com.gts.backgts.services;
 import com.gts.backgts.dto.LocationsRequest;
 import com.gts.backgts.dto.LocationsResponse;
 import com.gts.backgts.entites.*;
+import com.gts.backgts.enums.TypeEtatEngins;
 import com.gts.backgts.repository.ClientRepository;
 import com.gts.backgts.repository.ConducteurRepository;
 import com.gts.backgts.repository.EnginsRepository;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +30,8 @@ public class LocationsService {
         Client client = clientRepository.findById(request.clientId())
                 .orElseThrow(() -> new IllegalArgumentException("Client introuvable avec id: " + request.clientId()));
 
-        Conducteur conducteur = conducteurRepository.findById(request.conducteurId())
-                .orElseThrow(() -> new IllegalArgumentException("Conducteur introuvable avec id: " + request.conducteurId()));
+        //Conducteur conducteur = conducteurRepository.findById(request.conducteurId())
+        //        .orElseThrow(() -> new IllegalArgumentException("Conducteur introuvable avec id: " + request.conducteurId()));
 
         Engins engin = enginsRepository.findById(request.enginId())
                 .orElseThrow(() -> new IllegalArgumentException("Engin introuvable avec id: " + request.enginId()));
@@ -49,7 +51,7 @@ public class LocationsService {
 
         location.setEtatLocation(request.etatLocation());
         location.setClient(client);
-        location.setConducteur(conducteur);
+        //location.setConducteur(conducteur);
         location.setEngins(engin);
         location.setDateCreation(LocalDate.now());
 
@@ -58,7 +60,7 @@ public class LocationsService {
         enginsRepository.save(engin);
 
         //Changement de status du conducteur'
-        conducteur.setStatutConducteur(StatutConducteur.EN_MISSION);
+        //conducteur.setStatutConducteur(StatutConducteur.EN_MISSION);
         enginsRepository.save(engin);
         return toResponse(locationsRepository.save(location));
     }
@@ -132,9 +134,20 @@ public class LocationsService {
 
         return toResponse(locationsRepository.save(location));
     }
+
+
     public LocationsResponse terminerLocation(Long id, LocationsRequest request) {
         Locations location = locationsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Location introuvable avec id: " + id));
+
+
+        if (request.enginId()!=null) {
+            Optional<Engins> engins = enginsRepository.findById(request.enginId());
+            Engins engin = engins.get();
+            engin.setStatusEngin(TypeEtatEngins.DISPONIBLE);
+            enginsRepository.save(engin);
+        }
+
         location.setStatut("TERMINEE");
         return toResponse(locationsRepository.save(location));
     }

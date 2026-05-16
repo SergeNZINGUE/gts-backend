@@ -1,5 +1,6 @@
 package com.gts.backgts.entites;
 
+import com.gts.backgts.enums.TypeMaintenance;
 import jakarta.persistence.*;
 import lombok.*;
 

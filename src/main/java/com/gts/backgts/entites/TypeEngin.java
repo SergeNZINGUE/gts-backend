@@ -1,5 +1,6 @@
 package com.gts.backgts.entites;
 
+import com.gts.backgts.enums.FamilleEngin;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

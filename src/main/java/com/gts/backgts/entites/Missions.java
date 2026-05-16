@@ -1,5 +1,7 @@
 package com.gts.backgts.entites;
 
+import com.gts.backgts.enums.ModeCloture;
+import com.gts.backgts.enums.StatutMission;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +11,7 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -61,8 +64,9 @@ public class Missions implements Serializable {
     private Long carbtFinMission;
     private String materiauxMission;
     private Long qteMateriauxMission;
-
-    private String statutMission;
+    //  private String statutMission;
+    @Enumerated(EnumType.STRING)
+    private StatutMission statutMission;
 
     private String observationMission;
 
@@ -70,6 +74,12 @@ public class Missions implements Serializable {
     private String responsableMission;
     private String lieuMission;
     private String descriptionMission;
+
+    // Nouveaux champs 16052026
+    @Enumerated(EnumType.STRING)
+    private ModeCloture modeCloture;
+
+    private LocalDateTime dateCloture;
 
 }
 

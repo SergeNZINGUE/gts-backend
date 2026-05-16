@@ -1,6 +1,6 @@
 package com.gts.backgts.dto;
 
-import com.gts.backgts.entites.StatutAssurance;
+import com.gts.backgts.enums.StatutAssurance;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

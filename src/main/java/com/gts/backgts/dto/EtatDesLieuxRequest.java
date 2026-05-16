@@ -1,6 +1,6 @@
 package com.gts.backgts.dto;
 
-import com.gts.backgts.entites.TypeMouvement;
+import com.gts.backgts.enums.TypeMouvement;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -13,7 +13,7 @@ public record ConducteurRequest(
          String telephone,
          String permisCond,
          String qualifications,
-         String cnibRef,
+         String cniRef,
          String cniDateEmi,
          String cniDateExp,
          String cniLieuEtab,
@@ -27,7 +27,8 @@ public record ConducteurRequest(
          LocalDate dateCreation,
          LocalDate dateModification,
          Integer etatConducteur,
-         String statutConducteur
+         String statutConducteur,
+         Integer coutHoraireConducteur
 
 ) {
 }
