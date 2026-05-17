@@ -41,10 +41,10 @@ public class LocationsService {
         location.setStatut(request.statut());
         location.setCodeLocation(request.codeLocation());
         location.setNbJoursLocation(request.nbJoursLocation());
+        location.setNbHeureLocation(request.nbHeureLocation());
         location.setSiteLocation(request.siteLocation());
         location.setDateDbtLoc(request.dateDbtLoc());
         location.setDateFinLoc(request.dateFinLoc());
-        location.setNbHeureLocation(request.nbHeureLocation());
 
         location.setCoutHoraireLocation(request.coutHoraireLocation());
         location.setCoutJournalierLocation(request.coutJournalierLocation());

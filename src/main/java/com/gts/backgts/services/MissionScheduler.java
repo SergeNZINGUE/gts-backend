@@ -34,7 +34,7 @@ public class MissionScheduler {
             log.info("[Scheduler] Aucune mission à clôturer automatiquement.");
             return;
         }
-        missions.forEach(m -> missionsService.cloturerMission(m.getId()));
+        missions.forEach(m -> missionsService.cloturerMission(m.getId(), ModeCloture.AUTOMATIQUE));
         log.info("[Scheduler] {} mission(s) clôturée(s) automatiquement.", missions.size());
     }
 }

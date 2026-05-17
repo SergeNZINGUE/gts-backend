@@ -206,7 +206,7 @@ public class MissionsService {
     /**
      * Clôture rapide sans données terrain — appelée depuis le bouton "Clôturer" UI.
      */
-    public MissionsResponse cloturerMission(Long id) {
+    public MissionsResponse cloturerMission(Long id, ModeCloture modeCloture) {
         Missions mission = missionsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Mission introuvable avec id: " + id));
 
@@ -215,7 +215,7 @@ public class MissionsService {
         }
 
         mission.setStatutMission(StatutMission.TERMINEE);
-        mission.setModeCloture(ModeCloture.MANUEL);
+        mission.setModeCloture(modeCloture);
         mission.setDateCloture(LocalDateTime.now());
         mission.setDateModification(LocalDate.now());
 

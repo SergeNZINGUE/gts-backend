@@ -57,6 +57,6 @@ public class MissionsController {
     // MissionsController.java
     @PatchMapping("/{id}/cloturer")
     public ResponseEntity<MissionsResponse> cloturerMission(@PathVariable Long id) {
-        return ResponseEntity.ok(missionsService.cloturerMission(id));
+        return ResponseEntity.ok(missionsService.cloturerMission(id,ModeCloture.MANUEL));
     }
 }
