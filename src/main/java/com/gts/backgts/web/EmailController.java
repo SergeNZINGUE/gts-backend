@@ -8,6 +8,7 @@ import com.gts.backgts.repository.UserRepository;
 import com.gts.backgts.services.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -23,6 +24,7 @@ public class EmailController {
     private final UserRepository userRepository;
 
     @PostMapping("/confirmation/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmailResponse> envoyerConfirmation(
             @PathVariable Long userId,
             @RequestParam String lienConfirmation) {
@@ -32,6 +34,7 @@ public class EmailController {
     }
 
     @PostMapping("/reinitialisation/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmailResponse> envoyerReinitialisation(
             @PathVariable Long userId,
             @RequestParam String code) {
@@ -40,25 +43,21 @@ public class EmailController {
         return ResponseEntity.ok(emailService.envoyerReinitialisationMotDePasse(user, code));
     }
 
+    // forgot-password est déjà public (configuré dans SecurityConfig)
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> request) {
-
-        System.out.println("[debug]REQUEST GET DESTINATAIRE : "+request.get("email"));
-
+        System.out.println("[debug]REQUEST GET DESTINATAIRE : " + request.get("email"));
         Users user = userRepository.findByEmailUsers(request.get("email"))
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-
-        // Générer un code aléatoire à 6 chiffres
         String code = String.format("%06d", new Random().nextInt(999999));
-
-        // Sauvegarder le code dans l'utilisateur
         user.setCodeVerification(code);
         userRepository.save(user);
         emailService.envoyerReinitialisationMotDePasse(user, code);
-        return ResponseEntity.ok("un Email envoyé à l'adresse : "+request.get("email")+"");
+        return ResponseEntity.ok("un Email envoyé à l'adresse : " + request.get("email") + "");
     }
 
     @PostMapping("/notification/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmailResponse> envoyerNotification(
             @PathVariable Long userId,
             @RequestBody EmailRequest request) {

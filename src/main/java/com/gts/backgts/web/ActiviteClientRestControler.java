@@ -6,6 +6,7 @@ import com.gts.backgts.repository.ActiviteClientRepository;
 import com.gts.backgts.services.ActiviteClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,24 +15,25 @@ import java.util.List;
 @RequestMapping("/api/gts/activite-client")
 @RestController
 @RequiredArgsConstructor
-
 public class ActiviteClientRestControler {
+
     private final ActiviteClientRepository activiteClientRepository;
     private final ActiviteClientService activiteClientService;
 
-
-
-    @GetMapping(path ="/list")
+    @GetMapping(path = "/list")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ActiviteClientResponse>> getAllActiviteClients() {
         return ResponseEntity.ok(activiteClientService.getActiviteClient());
     }
 
-    @GetMapping(path ="/{codeActivite}")
+    @GetMapping(path = "/{codeActivite}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ActiviteClient> getActiviteByCode(@PathVariable String codeActivite) {
         return ResponseEntity.ok(activiteClientRepository.findByCodeActClt(codeActivite));
     }
 
-    @PostMapping (path ="")
+    @PostMapping(path = "")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ActiviteClient saveActiviteClients(@RequestParam String codeActivite, @RequestParam String libelleActivite) {
         ActiviteClient activiteClient = new ActiviteClient();
         activiteClient.setCodeActClt(codeActivite);
@@ -39,7 +41,8 @@ public class ActiviteClientRestControler {
         return activiteClientRepository.save(activiteClient);
     }
 
-    @PutMapping (path ="/updateActiviteClients/{codeActivite}")
+    @PutMapping(path = "/updateActiviteClients/{codeActivite}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ActiviteClient updateActiviteClients(@PathVariable String codeActivite, @RequestParam String libelleActivite) {
         ActiviteClient activiteClient = activiteClientRepository.findByCodeActClt(codeActivite);
         activiteClient.setDescription(libelleActivite);

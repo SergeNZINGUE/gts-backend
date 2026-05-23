@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="backgts"/>
+
+    <property name="LOG_DIR" value="logs"/>
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+    <property name="AUDIT_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %msg%n"/>
+
+    <!-- ===== Console ===== -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) %cyan(%logger{30}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ===== Fichier application (rotation quotidienne + taille) ===== -->
+    <appender name="FILE_APP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/gts-app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/archive/gts-app.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ===== Fichier erreurs uniquement ===== -->
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/gts-error.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/archive/gts-error.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxFileSize>20MB</maxFileSize>
+            <maxHistory>90</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ===== Fichier audit (logger dédié AUDIT) ===== -->
+    <appender name="FILE_AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/gts-audit.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/archive/gts-audit.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>365</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${AUDIT_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ===== Logger AUDIT — fichier uniquement (pas dans gts-app.log) ===== -->
+    <logger name="AUDIT" level="INFO" additivity="false">
+        <appender-ref ref="FILE_AUDIT"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- Réduire le bruit Spring/Hibernate -->
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.hibernate.SQL" level="WARN"/>
+    <logger name="org.hibernate.type" level="WARN"/>
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+
+    <!-- Logs applicatifs GTS en INFO -->
+    <logger name="com.gts.backgts" level="INFO"/>
+
+    <!-- ===== Root ===== -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE_APP"/>
+        <appender-ref ref="FILE_ERROR"/>
+    </root>
+
+</configuration>

@@ -6,9 +6,11 @@ import com.gts.backgts.services.ReglementService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
@@ -18,31 +20,37 @@ public class ReglementController {
     private final ReglementService reglementService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','COMPTABLE')")
     public ResponseEntity<ReglementResponse> create(@Valid @RequestBody ReglementRequest request) {
         return ResponseEntity.ok(reglementService.createReglement(request));
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','COMPTABLE')")
     public ResponseEntity<List<ReglementResponse>> getAll() {
         return ResponseEntity.ok(reglementService.getAllReglements());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','COMPTABLE')")
     public ResponseEntity<ReglementResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(reglementService.getReglementById(id));
     }
 
     @GetMapping("/facture/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','COMPTABLE')")
     public ResponseEntity<List<ReglementResponse>> getByFactureId(@PathVariable Long id) {
         return ResponseEntity.ok(reglementService.getReglementByFactureId(id));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','COMPTABLE')")
     public ResponseEntity<ReglementResponse> update(@PathVariable Long id, @RequestBody ReglementRequest request) {
         return ResponseEntity.ok(reglementService.updateReglement(id, request));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         reglementService.deleteReglement(id);
         return ResponseEntity.noContent().build();

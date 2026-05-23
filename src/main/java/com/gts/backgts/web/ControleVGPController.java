@@ -6,6 +6,7 @@ import com.gts.backgts.services.ControleVGPService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,26 +20,31 @@ public class ControleVGPController {
     private final ControleVGPService controleVGPService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
     public ResponseEntity<ControleVGPResponse> create(@Valid @RequestBody ControleVGPRequest request) {
         return ResponseEntity.ok(controleVGPService.createControleVGP(request));
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
     public ResponseEntity<List<ControleVGPResponse>> getAll() {
         return ResponseEntity.ok(controleVGPService.getAllControlesVGP());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
     public ResponseEntity<ControleVGPResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(controleVGPService.getControleVGPById(id));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
     public ResponseEntity<ControleVGPResponse> update(@PathVariable Long id, @RequestBody ControleVGPRequest request) {
         return ResponseEntity.ok(controleVGPService.updateControleVGP(id, request));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         controleVGPService.deleteControleVGP(id);
         return ResponseEntity.noContent().build();

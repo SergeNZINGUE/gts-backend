@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -32,6 +34,7 @@ public class SecurityConfig {
                 .cors((cors) -> cors.configurationSource(corsConfigurationSource))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Endpoints publics
                         .requestMatchers(
                                 "/",
                                 "/uploads/**",
@@ -40,9 +43,46 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html"
-
                         ).permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // Gestion utilisateurs et rôles — ADMIN uniquement
+                        .requestMatchers("/api/gts/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/gts/roles/**").hasRole("ADMIN")
+
+                        // Finances — ADMIN, MANAGER, COMPTABLE
+                        .requestMatchers("/api/gts/factures/**").hasAnyRole("ADMIN", "MANAGER", "COMPTABLE")
+                        .requestMatchers("/api/gts/reglements/**").hasAnyRole("ADMIN", "MANAGER", "COMPTABLE")
+                        .requestMatchers("/api/gts/reporting/**").hasAnyRole("ADMIN", "MANAGER", "COMPTABLE")
+
+                        // Flotte & opérations — ADMIN, MANAGER, OPERATEUR
+                        .requestMatchers("/api/gts/engins/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR")
+                        .requestMatchers("/api/gts/pelles/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR")
+                        .requestMatchers("/api/gts/conducteurs/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR", "COMPTABLE")
+                        .requestMatchers("/api/gts/missions/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR", "COMPTABLE")
+                        .requestMatchers("/api/gts/assurances/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR")
+                        .requestMatchers("/api/gts/controles-vgp/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR")
+                        .requestMatchers("/api/gts/consommations-carburant/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR")
+                        .requestMatchers("/api/gts/pieces-rechange/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR")
+                        .requestMatchers("/api/gts/etats-des-lieux/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR")
+
+                        // Locations — ADMIN, MANAGER, COMPTABLE, OPERATEUR (lecture seule via @PreAuthorize)
+                        .requestMatchers("/api/gts/locations/**").hasAnyRole("ADMIN", "MANAGER", "COMPTABLE", "OPERATEUR")
+
+                        // Clients — ADMIN, MANAGER, COMPTABLE, OPERATEUR (lecture seule via @PreAuthorize)
+                        .requestMatchers("/api/gts/clients/**").hasAnyRole("ADMIN", "MANAGER", "COMPTABLE", "OPERATEUR")
+
+                        // Référentiels (types, activités) — tout utilisateur authentifié
+                        .requestMatchers("/api/gts/types-engins/**").authenticated()
+                        .requestMatchers("/api/gts/activite-client/**").authenticated()
+
+                        // Emails — ADMIN
+                        .requestMatchers("/api/gts/emails/**").hasRole("ADMIN")
+
+                        // Audit — ADMIN uniquement
+                        .requestMatchers("/api/gts/audit/**").hasRole("ADMIN")
+
+                        // Toute autre requête authentifiée
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
@@ -54,13 +94,12 @@ public class SecurityConfig {
                         .accessDeniedHandler((request, response, e) -> {
                             response.setContentType("application/json;charset=UTF-8");
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                            response.getWriter().write("{\"error\":\"Accès refusé\"}");
+                            response.getWriter().write("{\"error\":\"Accès refusé : droits insuffisants\"}");
                         })
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
 
         return http.build();
     }

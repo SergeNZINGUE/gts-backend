@@ -7,50 +7,65 @@ import com.gts.backgts.services.AssuranceEnginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/gts/assurances")
-
 public class AssuranceEnginController {
+
     private final AssuranceEnginService assuranceEnginService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
     public ResponseEntity<AssuranceEnginResponse> create(@RequestBody AssuranceEnginRequest request) {
         return ResponseEntity.ok(assuranceEnginService.createAssuranceEngin(request));
     }
+
     @GetMapping("/engin/{enginId}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
     public ResponseEntity<List<AssuranceEnginResponse>> getByEngin(@PathVariable Long enginId) {
         return ResponseEntity.ok(assuranceEnginService.getAssurancesByEngin(enginId));
     }
+
     @GetMapping("/list")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
     public ResponseEntity<List<AssuranceEnginResponse>> getAll() {
         return ResponseEntity.ok(assuranceEnginService.getAll());
     }
+
     @GetMapping("/engin/{enginId}/active")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
     public ResponseEntity<AssuranceEnginResponse> getActiveByEngin(@PathVariable Long enginId) {
         return ResponseEntity.ok(assuranceEnginService.getActiveAssuranceByEngin(enginId));
     }
 
     @PutMapping("/{assuranceId}/expire")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
     public ResponseEntity<AssuranceEnginResponse> expire(@PathVariable Long assuranceId) {
         return ResponseEntity.ok(assuranceEnginService.expireAssurance(assuranceId));
     }
+
     @PutMapping("/{assuranceId}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
     public ResponseEntity<AssuranceEnginResponse> updateAssurance(@PathVariable Long assuranceId, @RequestBody AssuranceEnginRequest request) {
-        return ResponseEntity.ok(assuranceEnginService.updateAssuranceEngin(assuranceId,request));
+        return ResponseEntity.ok(assuranceEnginService.updateAssuranceEngin(assuranceId, request));
     }
 
     @DeleteMapping("/{assuranceId}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Void> delete(@PathVariable Long assuranceId) {
         assuranceEnginService.deleteAssurance(assuranceId);
         return ResponseEntity.noContent().build();
     }
+
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
     public ResponseEntity<AssuranceEnginResponse> createWithDocument(
             @RequestParam Long enginId,
             @RequestParam String numeroPolice,
