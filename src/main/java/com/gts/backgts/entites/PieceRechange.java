@@ -1,6 +1,5 @@
 package com.gts.backgts.entites;
 
-import com.gts.backgts.entites.Maintenance;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,8 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Setter
@@ -30,9 +27,6 @@ public class PieceRechange {
     private Double prixUnitaireAchat;
     LocalDate dateCreation;
     LocalDate dateModification;
-
-    @ManyToMany(mappedBy = "piecesUtilisees")
-    private Set<Maintenance> maintenances = new HashSet<>();
 
     public boolean isAlerteReapprovisionnement (){
         return  quantiteEnStock != null

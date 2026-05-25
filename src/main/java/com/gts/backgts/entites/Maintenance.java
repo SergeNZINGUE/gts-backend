@@ -6,53 +6,95 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-
+@ToString(exclude = {"actions", "piecesConsommees"})
 @Getter
 @Setter
-
 @Table(name = "MAINTENANCE")
 public class Maintenance implements Serializable {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String codeMaintenance;
     private String libMaintenance;
     private LocalDate dateDbtMaintenance;
-    private Date dateProchaineRevision;
-    private LocalDate dateDerniereRevision;
-    private Double horametreIntervention; // Heures affichées au compteur lors du soin
-    private Long huile10L;
-    private Long huile40L;
-    private Long huile90L;
-    @Enumerated(EnumType.STRING)
-    private TypeMaintenance type; //
 
+    /** Horamètre (heures compteur) au moment de l'intervention */
+    private Double horametreIntervention;
+
+    @Enumerated(EnumType.STRING)
+    private TypeMaintenance type;
+
+    /** Nom/prénom du technicien ayant réalisé l'intervention */
+    private String nomTechnicien;
+
+    /** Heure de début d'intervention */
+    private LocalTime heureDebut;
+
+    /** Heure de fin d'intervention */
+    private LocalTime heureFin;
+
+    /** Observations générales / description des travaux */
+    @Column(columnDefinition = "TEXT")
     private String descriptionTravaux;
-    private Double coutPieces;
+
+    /** Coût total main-d'œuvre */
     private Double coutMainOeuvre;
-    private Double prochaineEcheanceHeures; //ex prochaine maintenance dans 5000 H
+
+    /** Prochaine révision dans X heures-compteur */
+    private Double prochaineEcheanceHeures;
+
+    /** Date cible de la prochaine maintenance */
+    private LocalDate prochaineMaintenanceDate;
+
+    /** L'engin était-il remis en service opérationnel à la fin ? */
+    private Boolean enginOperationnel;
+
+    /** Référence URL ou identifiant de la signature du technicien */
+    private String signatureTechnicien;
+
+    /** Référence URL ou identifiant de la signature du responsable */
+    private String signatureResponsable;
+
     LocalDate dateCreation;
     LocalDate dateModification;
 
     @ManyToOne
     @JoinColumn(name = "CODE_ENGIN")
-    private Engins  engins;
+    private Engins engins;
 
+    /** Conducteur associé à l'engin au moment de l'intervention (optionnel) */
+    @ManyToOne
+    @JoinColumn(name = "conducteur_id")
+    private Conducteur conducteur;
 
-    @ManyToMany
-    @JoinTable(
-        name = "maintenance_piece_rechange",
-        joinColumns = @JoinColumn(name = "maintenance_id"),
-        inverseJoinColumns = @JoinColumn(name = "piece_rechange_id")
-    )
-    private Set<PieceRechange> piecesUtilisees = new HashSet<>();
+    @OneToMany(mappedBy = "maintenance", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ActionIntervention> actions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "maintenance", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PieceConsommee> piecesConsommees = new ArrayList<>();
+
+    // ── helpers ────────────────────────────────────────────────────────────
+    public Double getCoutPieces() {
+        if (piecesConsommees == null) return 0.0;
+        return piecesConsommees.stream()
+                .mapToDouble(p -> {
+                    if (p.getQuantite() == null) return 0.0;
+                    double pu = p.getPrixUnitaire() != null ? p.getPrixUnitaire() : 0.0;
+                    return p.getQuantite() * pu;
+                })
+                .sum();
+    }
+
+    public Double getCoutTotal() {
+        double mo = coutMainOeuvre != null ? coutMainOeuvre : 0.0;
+        return getCoutPieces() + mo;
+    }
 }

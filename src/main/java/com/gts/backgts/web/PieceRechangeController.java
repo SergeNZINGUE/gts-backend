@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/gts/pieces-rechange")
@@ -28,6 +29,21 @@ public class PieceRechangeController {
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
     public ResponseEntity<List<PieceRechangeResponse>> getAll() {
         return ResponseEntity.ok(pieceRechangeService.getAllPiecesRechange());
+    }
+
+    @GetMapping("/en-alerte")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
+    public ResponseEntity<List<PieceRechangeResponse>> getEnAlerte() {
+        return ResponseEntity.ok(pieceRechangeService.getPiecesEnAlerte());
+    }
+
+    /** Ajustement rapide de stock : PATCH /{id}/stock?delta=+5 ou delta=-2 */
+    @PatchMapping("/{id}/stock")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','OPERATEUR')")
+    public ResponseEntity<PieceRechangeResponse> ajusterStock(
+            @PathVariable Long id,
+            @RequestParam int delta) {
+        return ResponseEntity.ok(pieceRechangeService.ajusterStock(id, delta));
     }
 
     @GetMapping("/{id}")

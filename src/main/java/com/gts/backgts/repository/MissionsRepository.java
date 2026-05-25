@@ -26,4 +26,30 @@ public interface MissionsRepository extends JpaRepository<Missions, Long> {
             @Param("statut") StatutMission statut,
             @Param("date") LocalDate date
     );
+
+    /** Toutes les missions d'une période (tous engins) */
+    @Query("""
+        SELECT m FROM Missions m
+        JOIN FETCH m.location l
+        JOIN FETCH l.engins e
+        WHERE m.dateTravail BETWEEN :debut AND :fin
+        ORDER BY e.id, m.dateTravail ASC
+        """)
+    List<Missions> findAllByPeriode(
+            @Param("debut") LocalDate debut,
+            @Param("fin")   LocalDate fin);
+
+    /** Missions d'un engin spécifique sur une période */
+    @Query("""
+        SELECT m FROM Missions m
+        JOIN FETCH m.location l
+        JOIN FETCH l.engins e
+        WHERE e.id = :enginId
+          AND m.dateTravail BETWEEN :debut AND :fin
+        ORDER BY m.dateTravail ASC
+        """)
+    List<Missions> findByEnginAndPeriode(
+            @Param("enginId") Long enginId,
+            @Param("debut")   LocalDate debut,
+            @Param("fin")     LocalDate fin);
 }

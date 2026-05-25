@@ -38,8 +38,8 @@ public record MissionsRequest(
         Long kmFinMission,
         Long compteurDbtMission,
         Long compteurFinMission,
-        Long carbtDbtMission,
-        Long carbtFinMission,
+        Double carbtDbtMission,
+        Double carbtFinMission,
         String materiauxMission,
         Long qteMateriauxMission,
 

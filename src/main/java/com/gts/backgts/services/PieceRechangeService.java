@@ -59,6 +59,29 @@ public class PieceRechangeService {
         return toResponse(pieceRechangeRepository.save(pieceRechange));
     }
 
+    @Transactional(readOnly = true)
+    public List<PieceRechangeResponse> getPiecesEnAlerte() {
+        return pieceRechangeRepository.findAllEnAlerte()
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    public PieceRechangeResponse ajusterStock(Long id, int delta) {
+        PieceRechange piece = pieceRechangeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Pièce de rechange introuvable avec id: " + id));
+        int nouvelleQuantite = (piece.getQuantiteEnStock() != null ? piece.getQuantiteEnStock() : 0) + delta;
+        if (nouvelleQuantite < 0) {
+            throw new IllegalArgumentException(
+                    "Le stock ne peut pas devenir négatif (stock actuel : "
+                    + piece.getQuantiteEnStock() + ", delta : " + delta + ")");
+        }
+        piece.setQuantiteEnStock(nouvelleQuantite);
+        piece.setDateModification(LocalDate.now());
+        return toResponse(pieceRechangeRepository.save(piece));
+    }
+
     public void deletePieceRechange(Long id) {
         if (!pieceRechangeRepository.existsById(id)) {
             throw new IllegalArgumentException("Pièce de rechange introuvable avec id: " + id);

@@ -60,8 +60,8 @@ public class Missions implements Serializable {
     private Long compteurFinMission;
 
 
-    private Long carbtDbtMission;
-    private Long carbtFinMission;
+    private Double carbtDbtMission;   // litres réservoir au départ
+    private Double carbtFinMission;   // litres réservoir à l'arrivée
     private String materiauxMission;
     private Long qteMateriauxMission;
     //  private String statutMission;

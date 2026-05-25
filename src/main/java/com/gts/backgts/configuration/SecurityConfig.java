@@ -53,9 +53,12 @@ public class SecurityConfig {
                         // Finances — ADMIN, MANAGER, COMPTABLE
                         .requestMatchers("/api/gts/factures/**").hasAnyRole("ADMIN", "MANAGER", "COMPTABLE")
                         .requestMatchers("/api/gts/reglements/**").hasAnyRole("ADMIN", "MANAGER", "COMPTABLE")
+                        // Reporting carburant — ouvert aussi à OPERATEUR (règle spécifique avant la règle générale)
+                        .requestMatchers("/api/gts/reporting/carburant/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR", "COMPTABLE")
                         .requestMatchers("/api/gts/reporting/**").hasAnyRole("ADMIN", "MANAGER", "COMPTABLE")
 
                         // Flotte & opérations — ADMIN, MANAGER, OPERATEUR
+                        .requestMatchers("/api/gts/maintenance/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR")
                         .requestMatchers("/api/gts/engins/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR")
                         .requestMatchers("/api/gts/pelles/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR")
                         .requestMatchers("/api/gts/conducteurs/**").hasAnyRole("ADMIN", "MANAGER", "OPERATEUR", "COMPTABLE")
@@ -71,6 +74,9 @@ public class SecurityConfig {
 
                         // Clients — ADMIN, MANAGER, COMPTABLE, OPERATEUR (lecture seule via @PreAuthorize)
                         .requestMatchers("/api/gts/clients/**").hasAnyRole("ADMIN", "MANAGER", "COMPTABLE", "OPERATEUR")
+
+                        // Dashboard KPI — tout utilisateur authentifié
+                        .requestMatchers("/api/gts/dashboard/**").authenticated()
 
                         // Référentiels (types, activités) — tout utilisateur authentifié
                         .requestMatchers("/api/gts/types-engins/**").authenticated()
