@@ -44,8 +44,8 @@ public class RegistrationLoginService {
                     .stream()
                     .map(Role::getCodeTypeRole)
                     .toList();
-
-            return new AuthResponse(token, user.getUsername(), roles);
+           
+            return new AuthResponse(token, user.getUsername(),user.getEmailUsers(), roles);
 
         } catch (AuthenticationException e) {
             throw new IllegalArgumentException("Identifiants invalides");
