@@ -34,18 +34,13 @@ public class ActiviteClientRestControler {
 
     @PostMapping(path = "")
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
-    public ActiviteClient saveActiviteClients(@RequestParam String codeActivite, @RequestParam String libelleActivite) {
-        ActiviteClient activiteClient = new ActiviteClient();
-        activiteClient.setCodeActClt(codeActivite);
-        activiteClient.setDescription(libelleActivite);
-        return activiteClientRepository.save(activiteClient);
+    public ResponseEntity<ActiviteClientResponse> saveActiviteClients(@RequestParam String codeActivite, @RequestParam String libelleActivite) {
+        return ResponseEntity.ok(activiteClientService.create(codeActivite, libelleActivite));
     }
 
     @PutMapping(path = "/updateActiviteClients/{codeActivite}")
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
-    public ActiviteClient updateActiviteClients(@PathVariable String codeActivite, @RequestParam String libelleActivite) {
-        ActiviteClient activiteClient = activiteClientRepository.findByCodeActClt(codeActivite);
-        activiteClient.setDescription(libelleActivite);
-        return activiteClientRepository.save(activiteClient);
+    public ResponseEntity<ActiviteClientResponse> updateActiviteClients(@PathVariable String codeActivite, @RequestParam String libelleActivite) {
+        return ResponseEntity.ok(activiteClientService.update(codeActivite, libelleActivite));
     }
 }

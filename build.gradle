@@ -27,14 +27,10 @@ repositories {
 
 dependencies {
 
-    implementation 'org.springframework.boot:spring-boot-h2console'
+    // Retirés (non utilisés) : data-rest (exposait tous les repositories JPA, dont Users, à la racine),
+    // data-ldap, ldap, graphql, h2console + h2
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-data-ldap'
-    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
-    implementation 'org.springframework.boot:spring-boot-starter-graphql'
-    implementation 'org.springframework.boot:spring-boot-starter-ldap'
     implementation 'org.springframework.boot:spring-boot-starter-restclient'
-
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     //implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server'
@@ -42,7 +38,6 @@ dependencies {
     //implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server'
     //implementation 'org.springframework.boot:spring-boot-starter-security-saml2'
 
-    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
@@ -55,13 +50,8 @@ dependencies {
     // implementation 'org.springframework.security:spring-security-webauthn'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.h2database:h2'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-data-ldap-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-data-rest-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-graphql-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-ldap-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-restclient-test'
 
 
@@ -69,7 +59,6 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-webflux-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-    runtimeOnly 'com.mysql:mysql-connector-j'
     runtimeOnly 'com.mysql:mysql-connector-j'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
